@@ -16,4 +16,4 @@ USER user
 
 WORKDIR /home/user/
 
-CMD [ "/bin/bash" ]
+CMD [ "/scripts/entrypoint.sh" ]
