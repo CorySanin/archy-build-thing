@@ -3,7 +3,9 @@ FROM archlinux/archlinux:base-devel
 COPY scripts/entrypoint.sh /scripts/entrypoint.sh
 COPY scripts/testing.arch.sh /scripts/testing.sh
 
-RUN sed -i '1iServer = https://mirror.sanin.dev/arch-linux/\$repo/os/\$arch' /etc/pacman.d/mirrorlist && \
+ARG MIRROR=https://mirror.sanin.dev/arch-linux/\$repo/os/\$arch
+
+RUN sed -i "1iServer = $MIRROR" /etc/pacman.d/mirrorlist && \
   pacman -Syu --noconfirm git clang sudo devtools vim bash-completion && \
   chmod +x /scripts/* && \
   useradd -m user && \
