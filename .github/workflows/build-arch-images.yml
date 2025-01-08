@@ -28,12 +28,16 @@ jobs:
           ]
     env:
       ABSOLUTE_DH_IMAGE: docker.io/corysanin/archy-build-thing
-      DEPLOY: github.ref == 'refs/heads/master' && ( github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' )
+      DEPLOY: false
     permissions:
       contents: read
       packages: write
 
     steps:
+    - name: determine deployment
+      if: github.ref == 'refs/heads/master' && ( github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' )
+      run: echo "DEPLOY=true" >> $GITHUB_ENV
+
     - name: Checkout repository
       uses: actions/checkout@v4
 
