@@ -5,7 +5,7 @@ on:
     branches: [ master ]
   push:
     branches: [ master ]
-    paths: [ docker/* ]
+    paths: [ docker/*, docker/scripts/* ]
   pull_request:
     branches: [ master ]
     paths: [ docker/* ]

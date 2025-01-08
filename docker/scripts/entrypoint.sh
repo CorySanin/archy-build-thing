@@ -15,7 +15,8 @@ then
 fi
 
 # Clone the git repo
-git clone "$REPO" /home/user/pkg
-cd /home/user/pkg
+git clone "$REPO" /home/user/pkg && \
+cd /home/user/pkg && \
+sudo pacman -Syu --noconfirm --noprogressbar &&\
 makepkg -smf --noconfirm --noprogressbar --skippgpcheck --noarchive
 exit $?;
