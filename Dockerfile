@@ -4,7 +4,7 @@ WORKDIR /build
 COPY ./package*json ./
 RUN npm ci --only=production --omit=dev
 
-FROM docker:clie as deploy
+FROM docker:cli as deploy
 
 WORKDIR /srv/abt
 
