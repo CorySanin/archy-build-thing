@@ -1,0 +1,32 @@
+{
+  "name": "archy-build-thing",
+  "version": "0.0.1",
+  "description": "Build Arch packages through a web interface",
+  "keywords": [
+    "docker",
+    "arch",
+    "artix"
+  ],
+  "homepage": "https://github.com/CorySanin/archy-build-thing#readme",
+  "bugs": {
+    "url": "https://github.com/CorySanin/archy-build-thing/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CorySanin/archy-build-thing.git"
+  },
+  "license": "MIT",
+  "author": "Cory Sanin",
+  "type": "module",
+  "main": "index.ts",
+  "dependencies": {
+    "@types/express": "^5.0.0",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5"
+  },
+  "peerDependencies": {
+    "typescript": "5.7.3"
+  }
+}

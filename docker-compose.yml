@@ -1,0 +1,13 @@
+version: '2'
+
+services:
+    archy-build-thing:
+        container_name: archy-build-thing
+        build:
+            context: ./
+            dockerfile: Dockerfile
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+        restart: "no"
+        ports:
+            - 8080:8080
