@@ -105,4 +105,7 @@ dist
 
 # Custom
 *.js
+assets/css/
+assets/js/
+assets/webp/
 config/config.json

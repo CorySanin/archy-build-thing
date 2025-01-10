@@ -1,16 +1,19 @@
-FROM node:23-alpine AS build-env
+FROM node:23-alpine AS base
+FROM base AS build-env
 
 WORKDIR /build
 COPY ./package*json ./
-RUN npm ci --only=production --omit=dev
+RUN npm ci
+COPY . .
+RUN node --experimental-strip-types build.ts && \
+    npm ci --only=production --omit=dev
 
-FROM docker:cli as deploy
+FROM base as deploy
 
 WORKDIR /srv/abt
 
-RUN apk add --no-cache nodejs
+RUN apk add --no-cache docker-cli
 COPY --from=build-env /build .
-COPY . .
 
 EXPOSE 8080
-CMD [ "node", "--experimental-strip-types", "index.ts"]
+CMD [ "node", "--experimental-strip-types", "src/index.ts"]

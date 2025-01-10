@@ -24,7 +24,12 @@
     "express": "^4.21.2"
   },
   "devDependencies": {
-    "@types/node": "^22.10.5"
+    "@types/node": "^22.10.5",
+    "@types/csso": "5.0.4",
+    "@types/uglify-js": "3.17.5",
+    "csso": "5.0.5",
+    "sass": "1.83.1",
+    "uglify-js": "3.19.3"
   },
   "peerDependencies": {
     "typescript": "5.7.3"
