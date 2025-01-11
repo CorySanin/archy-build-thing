@@ -1,0 +1,22 @@
+<title><%= page.title %> | <%= page.titlesuffix %></title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="og:title" content="<%= page.title%> | <%= page.titlesuffix%>" />
+<% if (page.description) { %>
+<meta name="description" content="<%= page.description%>" />
+<meta name="og:description" content="<%= page.description%>" />
+<% } %>
+<% if (page.image) { %>
+<meta name="og:image" content="<%= page.image%>"/>
+<link rel="image_src" href="<%= page.image%>"/>
+<% } %>
+<% if (page.canonical) { %>
+<link rel="canonical" href="<%= page.canonical%>"/>
+<% } %>
+<link rel="shortcut icon" href="/assets/svg/archy.svg">
+<link rel="stylesheet" href="/assets/css/styles.css?v1">
+<script nonce="<%= cspNonce %>">
+    document.addEventListener("DOMContentLoaded", function() {
+        document.body.classList.remove('preload');
+    });
+</script>

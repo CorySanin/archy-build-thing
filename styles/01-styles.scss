@@ -1,0 +1,154 @@
+:root {
+    --primary: #0f6cb3;
+    --primary-dark: #0c4d90;
+    --primary-light: #1290db;
+    --complementary: #d96a14;
+    --color-text: #fafafa;
+    --color-body: #1a1a1a;
+}
+
+html,
+body {
+    box-sizing: border-box;
+    height: 100%;
+}
+
+*,
+*::before,
+*:after {
+    box-sizing: inherit;
+}
+
+body {
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 16pt;
+    line-height: 1.5;
+    margin: 0;
+    padding: 0;
+    background: var(--color-body);
+    color: var(--color-text);
+}
+
+h1 {
+    font-size: 2em;
+    margin: 0;
+    padding: 0;
+}
+
+table {
+    background-color: #2a2a2a;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td,
+th {
+    border: 1px solid #858585;
+    text-align: left;
+    overflow-x: auto;
+    overflow-wrap: anywhere;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: #222;
+}
+
+th {
+    color: #fff;
+    background-color: var(--primary-dark);
+    border: 1px solid var(--primary-light);
+    white-space: nowrap;
+}
+
+th a {
+    color: #fff;
+    text-decoration: underline;
+}
+
+form {
+    width: 40em;
+    max-width: 100%;
+}
+
+button,
+a.button,
+input[type="submit"] {
+    background-color: var(--primary);
+    border: .4em double var(--primary);
+    border-radius: .6em;
+    display: inline-block;
+    padding: .3em .6em;
+    color: #fff;
+
+    box-shadow: 0px .4em 0 0 var(--primary-dark);
+
+    &:active {
+        margin-top: .4em;
+        box-shadow: 0px .1em 0 0 var(--primary-dark);
+    }
+}
+
+
+.sidebar {
+    background: var(--primary);
+    width: 16em;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+
+    .sidebar_logo {
+        text-align: center;
+
+        a {
+            padding: .5em 0;
+            display: block;
+
+            img {
+                height: 4em;
+            }
+
+            &:hover {
+                background: var(--primary-dark);
+            }
+        }
+    }
+
+    ul.sidebar_links {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+
+        li {
+            padding: 0;
+
+            a {
+                text-decoration: none;
+                color: var(--color-text);
+                display: block;
+                padding: 0.3em 1em;
+
+                &:hover {
+                    background: var(--primary-dark);
+                }
+            }
+        }
+    }
+}
+
+.content {
+    margin-left: 16em;
+    padding: 1em;
+}
+
+.grid-2col {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1em;
+
+    .span-2 {
+        grid-column: span 2;
+    }
+}
