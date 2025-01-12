@@ -6,6 +6,7 @@ COPY ./package*json ./
 RUN npm ci
 COPY . .
 RUN node --experimental-strip-types build.ts && \
+    npm exec tsc && \
     npm ci --only=production --omit=dev
 
 FROM base as deploy

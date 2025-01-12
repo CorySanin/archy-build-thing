@@ -109,3 +109,5 @@ assets/css/
 assets/js/
 assets/webp/
 config/config.json
+config/postgres/
+.env
