@@ -91,8 +91,8 @@ class BuildController extends EventEmitter {
                     return (data: Buffer | string) => {
                         const str = data.toString();
                         const readyToLog = remainder[type] + str.substring(0, str.lastIndexOf('\n'));
-                        remainder[type] = str.substring(str.lastIndexOf('\n'));
-                        this.db.appendLog(build.id, readyToLog);
+                        remainder[type] = str.substring(str.lastIndexOf('\n') + 1);
+                        this.db.appendLog(build.id, type, readyToLog);
                         this.emitLog({
                             id: build.id,
                             type: type,
@@ -153,4 +153,4 @@ class BuildController extends EventEmitter {
 
 export default BuildController;
 export { BuildController };
-export type { };
+export type { BuildEvent, LogType };

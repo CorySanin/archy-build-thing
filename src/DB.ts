@@ -1,5 +1,6 @@
 import { Sequelize, DataTypes, Op, } from 'sequelize';
 import type { ModelStatic, Filterable } from 'sequelize';
+import type { LogType } from './BuildController.ts';
 
 type Status = 'queued' | 'running' | 'cancelled' | 'success' | 'error';
 type Dependencies = 'stable' | 'testing' | 'staging';
@@ -23,7 +24,13 @@ interface Build {
     endTime?: Date;
     status: Status;
     pid?: number;
-    log?: string;
+}
+
+interface LogChunk {
+    id: number
+    buildId: number
+    type: LogType,
+    chunk: string
 }
 
 const MONTH = 1000 * 60 * 60 * 24 * 24;
@@ -37,6 +44,7 @@ const SELECT = ['id', 'repo', 'commit', 'distro', 'dependencies', 'startTime', '
 
 class DB {
     private build: ModelStatic<any>;
+    private logChunk: ModelStatic<any>;
     private sequelize: Sequelize;
 
     constructor(config: DBConfig = {}) {
@@ -88,14 +96,42 @@ class DB {
             pid: {
                 type: DataTypes.INTEGER,
                 allowNull: true
-            },
-            log: {
-                type: DataTypes.TEXT,
-                allowNull: true
             }
         });
 
-        this.build.sync();
+        this.logChunk = this.sequelize.define('logChunk', {
+            id: {
+                type: DataTypes.INTEGER,
+                primaryKey: true,
+                autoIncrement: true
+            },
+            buildId: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                references: {
+                    model: 'builds',
+                    key: 'id'
+                },
+                onUpdate: 'CASCADE',
+                onDelete: 'CASCADE'
+            },
+            type: {
+                type: DataTypes.ENUM('std', 'err'),
+                allowNull: false,
+                defaultValue: 'std'
+            },
+            chunk: {
+                type: DataTypes.TEXT,
+                allowNull: false
+            }
+        });
+
+        this.sync();
+    }
+
+    private async sync(): Promise<void> {
+        await this.build.sync();
+        await this.logChunk.sync();
     }
 
     public async createBuild(repo: string, commit: string, patch: string, distro: string): Promise<number> {
@@ -132,13 +168,19 @@ class DB {
         });
     }
 
-    public async appendLog(id: number, log: string): Promise<void> {
-        const sanitizedLog = log.replace(/'/g, "''");
-        await this.build.update({
-            log: Sequelize.literal(`log || '${sanitizedLog}'`)
-        }, {
+    public async appendLog(buildId: number, type: LogType, chunk: string): Promise<void> {
+        await this.logChunk.create({
+            buildId,
+            type,
+            chunk
+        });
+    }
+
+    public async getLog(buildId: number): Promise<LogChunk[]> {
+        return await this.logChunk.findAll({
+            order: [['id', 'ASC']],
             where: {
-                id
+                buildId
             }
         });
     }
@@ -151,7 +193,7 @@ class DB {
         return await this.build.findAll({
             attributes: SELECT,
             order: [['id', 'DESC']],
-            where: FRESH,
+            where: FRESH
         });
     }
 

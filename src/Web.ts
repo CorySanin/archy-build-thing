@@ -21,10 +21,12 @@ class Web {
     private _webserver: http.Server | null = null;
     private db: DB;
     private buildController: BuildController;
+    private app: Express;
+    private port: number;
 
     constructor(options: WebConfig = {}) {
-        const app: Express = express();
-        const port: number = notStupidParseInt(process.env.PORT) || options['port'] as number || 8080;
+        const app: Express = this.app = express();
+        this.port = notStupidParseInt(process.env.PORT) || options['port'] as number || 8080;
 
         app.set('trust proxy', 1);
         app.set('view engine', 'ejs');
@@ -84,6 +86,8 @@ class Web {
                 res.sendStatus(404);
                 return;
             }
+            const log = (await this.db.getLog(build.id)).map(logChunk => logChunk.chunk.split('\n')).flat();
+
             res.render('build', {
                 page: {
                     title: 'Archery',
@@ -91,7 +95,7 @@ class Web {
                     description: `Building ${build.repo} on ${build.distro}`
                 },
                 build,
-                log: build.log?.split('\n')
+                log
             });
         });
 
@@ -101,14 +105,13 @@ class Web {
                 res.sendStatus(404);
                 return;
             }
-            res.set('Content-Type', 'text/plain').send(build.log);
+            const log = (await this.db.getLog(build.id)).map(logChunk => logChunk.chunk).join('\n');
+            res.set('Content-Type', 'text/plain').send(log);
         });
 
         app.get('/healthcheck', (_, res) => {
             res.send('Healthy');
         });
-
-        this._webserver = app.listen(port, () => console.log(`archery is running on port ${port}`));
     }
 
     close = () => {
@@ -119,6 +122,9 @@ class Web {
 
     setDB = (db: DB) => {
         this.db = db;
+        if (!this._webserver) {
+            this._webserver = this.app.listen(this.port, () => console.log(`archery is running on port ${this.port}`));
+        }
     }
 
     setBuildController = (buildController: BuildController) => {
