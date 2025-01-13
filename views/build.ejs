@@ -18,7 +18,10 @@
             <label>Start time</label> <span><%= build.startTime %></span>
         </div>
         <p><a href="/build/<%= build.id %>/logs">Full logs</a></p>
-        <div class="logs">
+        <div class="logs" id="logs">
+            <% (log || []).forEach(line => { %>
+                <p><%= line %></p>
+            <% }) %>
         </div>
     </div>
 </body>

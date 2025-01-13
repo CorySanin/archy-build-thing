@@ -1,12 +1,29 @@
 import { Sequelize, DataTypes, Op, } from 'sequelize';
 import type { ModelStatic, Filterable } from 'sequelize';
 
+type Status = 'queued' | 'running' | 'cancelled' | 'success' | 'error';
+type Dependencies = 'stable' | 'testing' | 'staging';
+
 interface DBConfig {
     db?: string;
     user?: string;
     password?: string;
     host?: string;
     port?: number;
+}
+
+interface Build {
+    id: number;
+    repo: string;
+    commit?: string;
+    patch?: string;
+    distro: string;
+    dependencies: Dependencies;
+    startTime?: Date;
+    endTime?: Date;
+    status: Status;
+    pid?: number;
+    log?: string;
 }
 
 const MONTH = 1000 * 60 * 60 * 24 * 24;
@@ -16,7 +33,7 @@ const FRESH = {
         { startTime: { [Op.is]: null } }
     ]
 }
-const SELECT = ['id', 'repo', 'commit', 'distro', 'startTime', 'endTime', 'status'];
+const SELECT = ['id', 'repo', 'commit', 'distro', 'dependencies', 'startTime', 'endTime', 'status'];
 
 class DB {
     private build: ModelStatic<any>;
@@ -49,6 +66,11 @@ class DB {
             distro: {
                 type: DataTypes.STRING,
                 allowNull: false
+            },
+            dependencies: {
+                type: DataTypes.ENUM('stable', 'testing', 'staging'),
+                allowNull: false,
+                defaultValue: 'stable'
             },
             startTime: {
                 type: DataTypes.DATE,
@@ -99,7 +121,7 @@ class DB {
         });
     }
 
-    public async finishBuild(id: number, status: string): Promise<void> {
+    public async finishBuild(id: number, status: Status): Promise<void> {
         await this.build.update({
             endTime: new Date(),
             status
@@ -111,8 +133,9 @@ class DB {
     }
 
     public async appendLog(id: number, log: string): Promise<void> {
+        const sanitizedLog = log.replace(/'/g, "''");
         await this.build.update({
-            log: Sequelize.literal(`log || '${log}'`)
+            log: Sequelize.literal(`log || '${sanitizedLog}'`)
         }, {
             where: {
                 id
@@ -120,11 +143,11 @@ class DB {
         });
     }
 
-    public async getBuild(id: number): Promise<any> {
+    public async getBuild(id: number): Promise<Build> {
         return await this.build.findByPk(id);
     }
 
-    public async getBuilds(): Promise<any> {
+    public async getBuilds(): Promise<Build[]> {
         return await this.build.findAll({
             attributes: SELECT,
             order: [['id', 'DESC']],
@@ -132,7 +155,7 @@ class DB {
         });
     }
 
-    public async getBuildsByStatus(status: string): Promise<any> {
+    public async getBuildsByStatus(status: Status): Promise<Build[]> {
         return await this.build.findAll({
             attributes: SELECT,
             order: [['id', 'DESC']],
@@ -143,7 +166,7 @@ class DB {
         });
     }
 
-    public async getBuildsByDistro(distro: string): Promise<any> {
+    public async getBuildsByDistro(distro: string): Promise<Build[]> {
         return await this.build.findAll({
             attributes: SELECT,
             order: [['id', 'DESC']],
@@ -154,7 +177,7 @@ class DB {
         });
     }
 
-    public async getBuildsBy(filterable: Filterable): Promise<any> {
+    public async getBuildsBy(filterable: Filterable): Promise<Build[]> {
         return await this.build.findAll({
             attributes: SELECT,
             order: [['id', 'DESC']],
@@ -165,7 +188,18 @@ class DB {
         });
     }
 
-    public async searchBuilds(query: string): Promise<any> {
+    public async dequeue(): Promise<Build> {
+        return await this.build.findOne({
+            attributes: SELECT,
+            order: [['id', 'ASC']],
+            where: {
+                status: 'queued'
+            },
+            limit: 1
+        });
+    }
+
+    public async searchBuilds(query: string): Promise<Build[]> {
         return await this.build.findAll({
             attributes: SELECT,
             order: [['id', 'DESC']],
@@ -193,4 +227,4 @@ class DB {
 
 export default DB;
 export { DB };
-export type { DBConfig };
+export type { DBConfig, Status, Build };

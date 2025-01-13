@@ -4,6 +4,7 @@ import type { Express } from "express";
 import express, { application } from 'express';
 import bodyParser from "body-parser";
 import type { DB } from "./DB.ts";
+import type { BuildController } from "./BuildController.ts";
 
 interface WebConfig {
     port?: number;
@@ -19,6 +20,7 @@ function notStupidParseInt(v: string | undefined): number {
 class Web {
     private _webserver: http.Server | null = null;
     private db: DB;
+    private buildController: BuildController;
 
     constructor(options: WebConfig = {}) {
         const app: Express = express();
@@ -71,8 +73,9 @@ class Web {
         });
 
         app.post('/build/?', async (req, res) => {
-            const build = await this.db.createBuild(req.body.repo, req.body.commit || null, req.body.patch || null, req.body.distro);
-            res.redirect(`/build/${build}`);
+            const buildId = await this.db.createBuild(req.body.repo, req.body.commit || null, req.body.patch || null, req.body.distro);
+            res.redirect(`/build/${buildId}`);
+            this.buildController.triggerBuild();
         });
 
         app.get('/build/:num/?', async (req, res) => {
@@ -87,7 +90,8 @@ class Web {
                     titlesuffix: `Build #${req.params.num}`,
                     description: `Building ${build.repo} on ${build.distro}`
                 },
-                build
+                build,
+                log: build.log?.split('\n')
             });
         });
 
@@ -115,6 +119,10 @@ class Web {
 
     setDB = (db: DB) => {
         this.db = db;
+    }
+
+    setBuildController = (buildController: BuildController) => {
+        this.buildController = buildController;
     }
 }
 

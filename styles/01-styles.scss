@@ -177,3 +177,37 @@ input[type="submit"] {
         grid-column: span 2;
     }
 }
+
+.logs {
+    font-family: 'Courier New', monospace;
+    border-left: #d96a14 .2em solid;
+    background: #2a2a2a;
+    margin-top: 1em;
+    overflow-x: auto;
+    overflow-wrap: anywhere;
+
+    p {
+        padding: .1em .5em;
+        min-height: 1.5em;
+
+        &:nth-child(even) {
+            background-color: #222;
+        }
+    }
+}
+
+.sidebar_search {
+    padding: .3em 1em;
+
+    form input {
+        font-size: 1.1em;
+        width: 100%;
+        background: #222;
+        color: var(--color-text);
+        border: var(--primary-light) solid .12em;
+
+        &:hover {
+            background: #2a2a2a;
+        }
+    }
+}
