@@ -1,4 +1,4 @@
-name: MultiArchDockerBuild
+name: App Image CI
 
 on:
   push:
