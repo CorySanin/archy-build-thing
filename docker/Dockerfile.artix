@@ -7,6 +7,7 @@ ARG MIRROR=https://mirror.sanin.dev/artix-linux/\$repo/os/\$arch
 
 RUN sed -i "1iServer = $MIRROR" /etc/pacman.d/mirrorlist && \
   pacman -Syu --noconfirm git clang sudo vim glibc openssh bash-completion && \
+  git config --global init.defaultBranch "master" && \
   chmod +x /scripts/* && \
   useradd -m user && \
   echo "user:pass-$RANDOM" | chpasswd && \
