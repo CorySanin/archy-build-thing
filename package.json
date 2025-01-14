@@ -1,5 +1,5 @@
 {
-  "name": "archy-build-thing",
+  "name": "archery",
   "version": "0.0.1",
   "description": "Build Arch packages through a web interface",
   "keywords": [
@@ -7,13 +7,13 @@
     "arch",
     "artix"
   ],
-  "homepage": "https://github.com/CorySanin/archy-build-thing#readme",
+  "homepage": "https://github.com/CorySanin/archery#readme",
   "bugs": {
-    "url": "https://github.com/CorySanin/archy-build-thing/issues"
+    "url": "https://github.com/CorySanin/archery/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/CorySanin/archy-build-thing.git"
+    "url": "git+https://github.com/CorySanin/archery.git"
   },
   "license": "MIT",
   "author": "Cory Sanin",

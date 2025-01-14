@@ -3,8 +3,8 @@ import EventEmitter from 'events';
 import type { Build, DB } from "./DB.ts";
 
 const docker_images = {
-    arch: 'corysanin/archy-build-thing:arch',
-    artix: 'corysanin/archy-build-thing:artix',
+    arch: 'corysanin/archery:arch',
+    artix: 'corysanin/archery:artix',
 }
 
 type LogType = 'std' | 'err' | 'finish';

@@ -1,8 +1,8 @@
 version: '2'
 
 services:
-    archy-build-thing:
-        container_name: archy-build-thing
+    archery:
+        container_name: archery
         build:
             context: ./
             dockerfile: Dockerfile
@@ -16,7 +16,7 @@ services:
             - postgres
     
     postgres:
-        container_name: archy-postgres
+        container_name: archery-postgres
         image: postgres:17-alpine
         environment:
             POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}

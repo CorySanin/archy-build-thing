@@ -27,7 +27,7 @@ jobs:
             artix
           ]
     env:
-      ABSOLUTE_DH_IMAGE: docker.io/corysanin/archy-build-thing
+      ABSOLUTE_DH_IMAGE: docker.io/corysanin/archery
       DEPLOY: false
     permissions:
       contents: read
