@@ -1,10 +1,11 @@
 import * as http from "http";
 import crypto from 'crypto';
 import type { Express } from "express";
-import express, { application } from 'express';
+import express from 'express';
+import expressWs from "express-ws";
 import bodyParser from "body-parser";
 import type { DB } from "./DB.ts";
-import type { BuildController } from "./BuildController.ts";
+import type { BuildController, BuildEvent } from "./BuildController.ts";
 
 interface WebConfig {
     port?: number;
@@ -26,6 +27,7 @@ class Web {
 
     constructor(options: WebConfig = {}) {
         const app: Express = this.app = express();
+        const wsApp = expressWs(app).app;
         this.port = notStupidParseInt(process.env.PORT) || options['port'] as number || 8080;
 
         app.set('trust proxy', 1);
@@ -95,7 +97,8 @@ class Web {
                     description: `Building ${build.repo} on ${build.distro}`
                 },
                 build,
-                log
+                log,
+                ended: build.status !== 'queued' && build.status !== 'running'
             });
         });
 
@@ -112,6 +115,22 @@ class Web {
         app.get('/healthcheck', (_, res) => {
             res.send('Healthy');
         });
+
+        wsApp.ws('/build/:num/ws', (ws, req) => {
+            console.log('WS Opened');
+            const eventListener = (be: BuildEvent) => {
+                if (be.id === notStupidParseInt(req.params.num)) {
+                    ws.send(JSON.stringify(be));
+                }
+            };
+            this.buildController.on('log', eventListener);
+
+            ws.on('close', () => {
+                console.log('WS Closed');
+                this.buildController.removeListener('log', eventListener);
+            });
+        });
+
     }
 
     close = () => {

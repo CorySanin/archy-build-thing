@@ -105,11 +105,13 @@ input[type="submit"] {
     display: inline-block;
     padding: .3em .6em;
     color: #fff;
+    margin-bottom: .4em;
 
     box-shadow: 0px .4em 0 0 var(--primary-dark);
 
     &:active {
         margin-top: .4em;
+        margin-bottom: 0;
         box-shadow: 0px .1em 0 0 var(--primary-dark);
     }
 }
@@ -236,5 +238,19 @@ input[type="submit"] {
             padding: 0 1em 0 0;
             font-size: inherit;
         }
+    }
+}
+
+#followCheckmarkContainer {
+    display: inline-block;
+    position: fixed;
+    right: 1.3em;
+    bottom: 1.6em;
+    padding: 1em;
+    background-color: rgba(15,15,15,.8);
+    cursor: pointer;
+
+    input {
+        cursor: inherit;
     }
 }

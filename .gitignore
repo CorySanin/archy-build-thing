@@ -104,7 +104,6 @@ dist
 .tern-port
 
 # Custom
-*.js
 assets/css/
 assets/js/
 assets/webp/

@@ -9,12 +9,13 @@
     <%- include("navigation", locals) %>
     <div class="content">
         <h1>Build #<%= build.id %></h1>
-        <h2><%= build.status %></h2>
+        <h2 id="buildStatus"><%= build.status %></h2>
         <div class="grid-2col">
             <label>Repo</label> <span><%= build.repo %></span>
             <label>Commit</label> <span><% if (build.commit) { %><%= build.commit %><% } else { %>latest<% } %></span>
             <label>Patch</label> <span><% if (build.patch) { %><a href="/build/<%= build.id %>/patch">patch file</a><% } else { %>none<% } %></span>
             <label>Distro</label> <span><%= build.distro %></span>
+            <label>Dependencies</label> <span><%= build.dependencies %></span>
             <label>Start time</label> <span><%= build.startTime %></span>
         </div>
         <p><a href="/build/<%= build.id %>/logs">Full logs</a></p>
@@ -23,7 +24,16 @@
                 <p><%= line %></p>
             <% }) %>
         </div>
+
+        <% if (!ended) { %>
+        <label id="followCheckmarkContainer" title="Follow logs">
+            <input type="checkbox" id="followCheckmark" />
+        </label>
+        <% } %>
     </div>
     <%- include("footer", locals) %>
+    <% if (!ended) { %>
+    <script src="/assets/js/build.js?v1" nonce="<%= cspNonce %>"></script>
+    <% } %>
 </body>
 </html>

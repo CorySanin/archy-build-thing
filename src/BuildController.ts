@@ -19,10 +19,11 @@ class BuildController extends EventEmitter {
     private db: DB;
     private process: spawn.ChildProcess | null = null;
     private running: boolean = false;
+    private interval: NodeJS.Timeout;
 
     constructor(config = {}) {
         super();
-        setInterval(this.triggerBuild, 60000);
+        // this.interval = setInterval(this.triggerBuild, 60000);
     }
 
     triggerBuild = () => {
@@ -106,18 +107,18 @@ class BuildController extends EventEmitter {
             });
             docker.on('close', (code) => {
                 this.process = null;
+                const status = code === 0 ? 'success' : 'error';
                 this.emitLog({
                     id: build.id,
                     type: 'finish',
-                    message: code
+                    message: status
                 });
+                this.db.finishBuild(build.id, status);
 
                 if (code === 0) {
-                    this.db.finishBuild(build.id, 'success');
                     resolve();
                 }
                 else {
-                    this.db.finishBuild(build.id, 'error');
                     reject(code);
                 }
             });
@@ -148,6 +149,12 @@ class BuildController extends EventEmitter {
 
     setDB = (db: DB) => {
         this.db = db;
+    }
+
+    close = () => {
+        if (this.interval) {
+            clearInterval(this.interval);
+        }
     }
 }
 

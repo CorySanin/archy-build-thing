@@ -24,4 +24,5 @@ buildController.setDB(db);
 process.on('SIGTERM', () => {
     web.close();
     db.close();
+    buildController.close();
 });
