@@ -19,7 +19,7 @@ function notStupidParseInt(v: string | undefined): number {
 }
 
 function timeElapsed(date1: Date, date2: Date) {
-    if (!date2 || ! date1) {
+    if (!date2 || !date1) {
         return '-';
     }
     const ms = Math.abs(date2.getTime() - date1.getTime());
@@ -33,12 +33,12 @@ class Web {
     private _webserver: http.Server | null = null;
     private db: DB;
     private buildController: BuildController;
-    private app: Express;
+    private app: expressWs.Application;
     private port: number;
 
     constructor(options: WebConfig = {}) {
-        const app: Express = this.app = express();
-        const wsApp = expressWs(app).app;
+        const app: Express = express();
+        const wsApp = this.app = expressWs(app).app;
         this.port = notStupidParseInt(process.env.PORT) || options['port'] as number || 8080;
 
         app.set('trust proxy', 1);
@@ -118,6 +118,21 @@ class Web {
                 log,
                 ended: build.status !== 'queued' && build.status !== 'running'
             });
+        });
+
+        app.get('/build/:num/cancel', async (req, res) => {
+            const build = await this.db.getBuild(parseInt(req.params.num));
+            if (!build) {
+                res.sendStatus(404);
+                return;
+            }
+            try {
+                await this.buildController.cancelBuild(build.id);
+            }
+            catch (ex) {
+                console.error(ex);
+            }
+            res.redirect(`/build/${build.id}`);
         });
 
         app.get('/build/:num/logs/?', async (req, res) => {

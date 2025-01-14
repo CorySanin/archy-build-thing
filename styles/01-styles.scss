@@ -99,6 +99,7 @@ form {
 button,
 a.button,
 input[type="submit"] {
+    font-size: 12pt;
     background-color: var(--primary);
     border: .4em double var(--primary);
     border-radius: .6em;
@@ -106,7 +107,7 @@ input[type="submit"] {
     padding: .3em .6em;
     color: #fff;
     margin-bottom: .4em;
-
+    text-decoration: none;
     box-shadow: 0px .4em 0 0 var(--primary-dark);
 
     &:active {

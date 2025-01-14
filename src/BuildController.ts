@@ -15,11 +15,15 @@ interface BuildEvent {
     message: any;
 }
 
+function getContainerName(id: number) {
+    return `archery-build-${id}`;
+}
+
 class BuildController extends EventEmitter {
     private db: DB;
-    private process: spawn.ChildProcess | null = null;
     private running: boolean = false;
     private interval: NodeJS.Timeout;
+    private cancelled: boolean = false;
 
     constructor(config = {}) {
         super();
@@ -37,6 +41,7 @@ class BuildController extends EventEmitter {
 
     private kickOffBuild = async () => {
         this.running = true;
+        this.cancelled = false;
         const build = await this.db.dequeue();
         if (build === null) {
             this.running = false;
@@ -80,7 +85,7 @@ class BuildController extends EventEmitter {
 
     private build = async (build: Build) => {
         return new Promise<void>((resolve, reject) => {
-            const docker = this.process = spawn.spawn('docker', this.createBuildParams(build));
+            const docker = spawn.spawn('docker', this.createBuildParams(build));
             docker.on('spawn', () => {
                 const remainder = {
                     std: '',
@@ -106,8 +111,7 @@ class BuildController extends EventEmitter {
                 docker.stderr.on('data', createLogFunction('err'));
             });
             docker.on('close', (code) => {
-                this.process = null;
-                const status = code === 0 ? 'success' : 'error';
+                const status = code === 0 ? 'success' : (this.cancelled ? 'cancelled' : 'error');
                 this.emitLog({
                     id: build.id,
                     type: 'finish',
@@ -115,12 +119,7 @@ class BuildController extends EventEmitter {
                 });
                 this.db.finishBuild(build.id, status);
 
-                if (code === 0) {
-                    resolve();
-                }
-                else {
-                    reject(code);
-                }
+                resolve();
             });
         });
     }
@@ -136,15 +135,40 @@ class BuildController extends EventEmitter {
             // TODO: implement COMMIT
             params.push('-e', `COMMIT=${build.commit}`);
         }
+        params.push('--name', getContainerName(build.id));
         params.push(docker_images[build.distro]);
         return params;
     }
 
-    cancelBuild = async (pid: number) => {
-        const p = this.process
-        if (p && p.pid === pid) {
-            return p.kill();
+    cancelBuild = async (id: number) => {
+        const running = this.running;
+        const build = await this.db.getBuild(id);
+        if (running && build.status === 'queued') {
+            await this.db.finishBuild(id, 'cancelled');
+            return;
         }
+        await new Promise<void>((resolve, reject) => {
+            const dockerPs = spawn.spawn('docker', ['ps', '--filter', `name=${getContainerName(id)}`, '--format', '{{.ID}}']);
+            let output = '';
+            dockerPs.on('spawn', () => {
+                dockerPs.stdout.on('data', (data: Buffer | string) => {
+                    output += data.toString();
+                });
+            });
+            dockerPs.on('close', (code) => {
+                if (code > 0) {
+                    return reject('failed to get container id');
+                }
+                this.cancelled = true;
+                const dockerKill = spawn.spawn('docker', ['stop', output.trim()]);
+                dockerKill.on('close', (code) => {
+                    if (code > 0) {
+                        return reject('failed to kill container');
+                    }
+                    resolve();
+                });
+            });
+        });
     }
 
     setDB = (db: DB) => {

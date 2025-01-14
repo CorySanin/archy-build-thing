@@ -7,6 +7,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const elements = document.getElementsByClassName('to-local-time');
     for (let element of elements) {
         const innerText = element.innerText;
-        element.replaceChild(document.createTextNode(window.formatTime(innerText)), element.firstChild);
+        if (element.firstChild) {
+            element.replaceChild(document.createTextNode(window.formatTime(innerText)), element.firstChild);
+        }
+        else {
+            element.appendChild(document.createTextNode('-'));
+        }
     }
 });
