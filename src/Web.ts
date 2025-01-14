@@ -18,6 +18,17 @@ function notStupidParseInt(v: string | undefined): number {
     return v === undefined ? NaN : parseInt(v);
 }
 
+function timeElapsed(date1: Date, date2: Date) {
+    if (!date2 || ! date1) {
+        return '-';
+    }
+    const ms = Math.abs(date2.getTime() - date1.getTime());
+    const seconds = Math.floor(ms / 1000) % 60;
+    const minutes = Math.floor(ms / (1000 * 60)) % 60;
+    const hours = Math.floor(ms / (1000 * 60 * 60));
+    return `${hours}:${minutes}:${seconds}`;
+}
+
 class Web {
     private _webserver: http.Server | null = null;
     private db: DB;
@@ -57,7 +68,8 @@ class Web {
                         titlesuffix: 'Dashboard',
                         description: 'PKGBUILD central'
                     },
-                    builds
+                    builds,
+                    timeElapsed
                 });
             }
             catch (err) {

@@ -22,7 +22,7 @@
                     <td><a href="/build/<%= build.id %>"><%= build.repo %></a></td>
                     <td><%= build.distro %></td>
                     <td class="to-local-time"><%= build.startTime %></td>
-                    <td>TODO</td>
+                    <td><%= timeElapsed(build.startTime, build.endTime) %></td>
                     <td><%= build.status %></td>
                 </tr>
             <% }) %>
