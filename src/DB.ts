@@ -134,12 +134,13 @@ class DB {
         await this.logChunk.sync();
     }
 
-    public async createBuild(repo: string, commit: string, patch: string, distro: string): Promise<number> {
+    public async createBuild(repo: string, commit: string, patch: string, distro: string, dependencies: string): Promise<number> {
         const buildRec = await this.build.create({
             repo,
             commit: commit || null,
             patch: patch || null,
-            distro
+            distro,
+            dependencies
         });
         return buildRec.id;
     }

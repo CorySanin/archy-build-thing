@@ -21,7 +21,7 @@
                 <tr>
                     <td><a href="/build/<%= build.id %>"><%= build.repo %></a></td>
                     <td><%= build.distro %></td>
-                    <td><%= build.startTime %></td>
+                    <td class="to-local-time"><%= build.startTime %></td>
                     <td>TODO</td>
                     <td><%= build.status %></td>
                 </tr>
@@ -29,5 +29,6 @@
         </table>
     </div>
     <%- include("footer", locals) %>
+    <script src="/assets/js/timezone.js?v1" nonce="<%= cspNonce %>"></script>
 </body>
 </html>

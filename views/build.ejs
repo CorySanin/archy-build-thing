@@ -16,7 +16,7 @@
             <label>Patch</label> <span><% if (build.patch) { %><a href="/build/<%= build.id %>/patch">patch file</a><% } else { %>none<% } %></span>
             <label>Distro</label> <span><%= build.distro %></span>
             <label>Dependencies</label> <span><%= build.dependencies %></span>
-            <label>Start time</label> <span><%= build.startTime %></span>
+            <label>Start time</label> <span class="to-local-time"><%= build.startTime %></span>
         </div>
         <p><a href="/build/<%= build.id %>/logs">Full logs</a></p>
         <div class="logs" id="logs">
@@ -32,6 +32,7 @@
         <% } %>
     </div>
     <%- include("footer", locals) %>
+    <script src="/assets/js/timezone.js?v1" nonce="<%= cspNonce %>"></script>
     <% if (!ended) { %>
     <script src="/assets/js/build.js?v1" nonce="<%= cspNonce %>"></script>
     <% } %>

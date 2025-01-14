@@ -77,7 +77,13 @@ class Web {
         });
 
         app.post('/build/?', async (req, res) => {
-            const buildId = await this.db.createBuild(req.body.repo, req.body.commit || null, req.body.patch || null, req.body.distro);
+            const buildId = await this.db.createBuild(
+                req.body.repo,
+                req.body.commit || null,
+                req.body.patch || null,
+                req.body.distro || 'arch',
+                req.body.dependencies || 'stable'
+            );
             res.redirect(`/build/${buildId}`);
             this.buildController.triggerBuild();
         });
