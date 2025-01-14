@@ -50,7 +50,7 @@ class Web {
 
         app.get('/', async (req, res) => {
             try {
-                const builds = await this.db.getBuildsBy(req.query);
+                const builds = 'q' in req.query ? await this.db.searchBuilds(req.query.q as string) : await this.db.getBuildsBy(req.query);
                 res.render('index', {
                     page: {
                         title: 'Archery',
