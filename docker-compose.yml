@@ -10,7 +10,7 @@ services:
             - ./config:/srv/archery/config
             - /var/run/docker.sock:/var/run/docker.sock
         environment:
-            - PASSWORD: ${POSTGRES_PASSWORD}
+            PASSWORD: ${POSTGRES_PASSWORD}
         restart: "no"
         ports:
             - 8080:8080
