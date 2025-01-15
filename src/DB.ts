@@ -48,7 +48,7 @@ class DB {
     private sequelize: Sequelize;
 
     constructor(config: DBConfig = {}) {
-        this.sequelize = new Sequelize(config.db || 'archery', config.user || 'archery', config.password || '', {
+        this.sequelize = new Sequelize(config.db || 'archery', config.user || 'archery', process.env.PASSWORD || config.password || '', {
             host: config.host || 'localhost',
             port: config.port || 5432,
             dialect: 'postgres'
