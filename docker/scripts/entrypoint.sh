@@ -1,11 +1,9 @@
 #!/bin/sh
 
-if [ -n "$DEP" ]
+if [ -n "$DEP" ] && [ "$DEP" != "stable" ]
 then
-    if [ "$DEP" = "testing" ]
-    then
-        /scripts/testing.sh
-    fi
+    sudo cp "/scripts/pacman.conf/pacman.$DEP.conf" "/etc/pacman.conf" && \
+    sudo pacman -Syu --noconfirm --noprogressbar
 fi
 
 if [ -z "$REPO" ]
@@ -14,9 +12,33 @@ then
     exit $?;
 fi
 
+checkoutCommit() {
+    if [ -n "$COMMIT" ]
+    then
+        git checkout "$COMMIT"
+    fi
+}
+
+applyPatch() {
+    if [ -n "$PATCH" ]
+    then
+        printf "$PATCH" > ../build.patch && \
+        patch --strip=1 --input=../build.patch
+    fi
+}
+
+changeDir() {
+    if [ -n "$CD" ]
+    then
+        cd "$CD"
+    fi
+}
+
 # Clone the git repo
 git clone "$REPO" /home/user/pkg && \
 cd /home/user/pkg && \
+checkoutCommit && \
+applyPatch && \
 sudo pacman -Syu --noconfirm --noprogressbar &&\
 makepkg -smf --noconfirm --noprogressbar --skippgpcheck --noarchive
 exit $?;

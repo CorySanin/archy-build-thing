@@ -1,7 +1,7 @@
 FROM artixlinux/artixlinux:base-devel
 
 COPY scripts/entrypoint.sh /scripts/entrypoint.sh
-COPY scripts/testing.artix.sh /scripts/testing.sh
+COPY scripts/pacman.conf.artix/* /scripts/pacman.conf/
 
 ARG MIRROR=https://mirror.sanin.dev/artix-linux/\$repo/os/\$arch
 
