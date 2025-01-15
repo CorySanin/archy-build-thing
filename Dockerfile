@@ -11,7 +11,7 @@ RUN node --experimental-strip-types build.ts && \
 
 FROM base as deploy
 
-WORKDIR /srv/abt
+WORKDIR /srv/archery
 
 RUN apk add --no-cache docker-cli
 COPY --from=build-env /build .
