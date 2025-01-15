@@ -145,6 +145,15 @@ class Web {
             res.set('Content-Type', 'text/plain').send(log);
         });
 
+        app.get('/build/:num/patch/?', async (req, res) => {
+            const build = await this.db.getBuild(parseInt(req.params.num));
+            if (!build || !build.patch) {
+                res.sendStatus(404);
+                return;
+            }
+            res.set('Content-Type', 'text/plain').send(build.patch);
+        });
+
         app.get('/healthcheck', (_, res) => {
             res.send('Healthy');
         });

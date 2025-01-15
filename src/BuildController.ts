@@ -129,11 +129,15 @@ class BuildController extends EventEmitter {
     }
 
     private createBuildParams = (build: Build) => {
-        // TODO: implement patch
         const params = ['run', '--rm', '-e', `REPO=${build.repo}`];
+        if (build.dependencies) {
+            params.push('-e', `DEP=${build.dependencies}`);
+        }
         if (build.commit) {
-            // TODO: implement COMMIT
             params.push('-e', `COMMIT=${build.commit}`);
+        }
+        if (build.patch) {
+            params.push('-e', `PATCH=${build.patch}`);
         }
         params.push('--name', getContainerName(build.id));
         params.push(docker_images[build.distro]);

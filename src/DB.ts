@@ -233,7 +233,6 @@ class DB {
 
     public async dequeue(): Promise<Build> {
         return await this.build.findOne({
-            attributes: SELECT,
             order: [['id', 'ASC']],
             where: {
                 status: 'queued'
