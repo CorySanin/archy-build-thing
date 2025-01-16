@@ -54,6 +54,7 @@ table {
     background-color: #2a2a2a;
     border-collapse: collapse;
     width: 100%;
+    min-width: 42em;
 }
 
 td,
@@ -200,6 +201,8 @@ input[type="submit"] {
     display: grid;
     grid-template-columns: auto 1fr;
     gap: .65em;
+    word-break: keep-all;
+    white-space: nowrap;
 
     .span-2 {
         grid-column: span 2;
@@ -208,6 +211,7 @@ input[type="submit"] {
 
 .logs {
     font-family: 'Courier New', monospace;
+    font-size: 0.9em;
     border-left: #d96a14 .2em solid;
     background: #2a2a2a;
     margin-top: 1em;
@@ -253,7 +257,7 @@ input[type="submit"] {
     right: 1.3em;
     bottom: 1.6em;
     padding: 1em;
-    background-color: rgba(15,15,15,.8);
+    background-color: rgba(15, 15, 15, .8);
     cursor: pointer;
 
     input {

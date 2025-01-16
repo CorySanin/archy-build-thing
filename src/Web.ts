@@ -4,7 +4,7 @@ import type { Express } from "express";
 import express from 'express';
 import expressWs from "express-ws";
 import bodyParser from "body-parser";
-import type { DB } from "./DB.ts";
+import type { DB, LogChunk } from "./DB.ts";
 import type { BuildController, BuildEvent } from "./BuildController.ts";
 
 interface WebConfig {
@@ -27,6 +27,10 @@ function timeElapsed(date1: Date, date2: Date) {
     const minutes = Math.floor(ms / (1000 * 60)) % 60;
     const hours = Math.floor(ms / (1000 * 60 * 60));
     return `${hours}:${minutes}:${seconds}`;
+}
+
+function splitLines(lines: LogChunk[]) {
+    return lines.map(logChunk => logChunk.chunk.split('\n')).flat().map(line => line.substring(line.lastIndexOf('\r') + 1));
 }
 
 class Web {
@@ -106,7 +110,7 @@ class Web {
                 res.sendStatus(404);
                 return;
             }
-            const log = (await this.db.getLog(build.id)).map(logChunk => logChunk.chunk.split('\n')).flat();
+            const log = splitLines(await this.db.getLog(build.id));
 
             res.render('build', {
                 page: {

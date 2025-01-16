@@ -10,13 +10,15 @@
     <div class="content">
         <h1>Build #<%= build.id %></h1>
         <h2 id="buildStatus"><%= build.status %></h2>
-        <div class="grid-2col">
-            <label>Repo</label> <span><%= build.repo %></span>
-            <label>Commit</label> <span><% if (build.commit) { %><%= build.commit %><% } else { %>latest<% } %></span>
-            <label>Patch</label> <span><% if (build.patch) { %><a href="/build/<%= build.id %>/patch">patch file</a><% } else { %>none<% } %></span>
-            <label>Distro</label> <span><%= build.distro %></span>
-            <label>Dependencies</label> <span><%= build.dependencies %></span>
-            <label>Start time</label> <span class="to-local-time"><%= build.startTime %></span>
+        <div class="overflow-x">
+            <div class="grid-2col">
+                <label>Repo</label> <span><%= build.repo %></span>
+                <label>Commit</label> <span><% if (build.commit) { %><%= build.commit %><% } else { %>latest<% } %></span>
+                <label>Patch</label> <span><% if (build.patch) { %><a href="/build/<%= build.id %>/patch">patch file</a><% } else { %>none<% } %></span>
+                <label>Distro</label> <span><%= build.distro %></span>
+                <label>Dependencies</label> <span><%= build.dependencies %></span>
+                <label>Start time</label> <span class="to-local-time"><%= build.startTime %></span>
+            </div>
         </div>
         <% if (!ended) { %>
         <div>
@@ -24,11 +26,7 @@
         </div>
         <% } %>
         <p><a href="/build/<%= build.id %>/logs">Full logs</a></p>
-        <div class="logs" id="logs">
-            <% (log || []).forEach(line => { %>
-                <p><%= line %></p>
-            <% }) %>
-        </div>
+        <pre><div class="logs" id="logs"><% (log || []).forEach(line => { %><p><%= line %></p><% }) %></div></pre>
 
         <% if (!ended) { %>
         <label id="followCheckmarkContainer" title="Follow logs">

@@ -269,4 +269,4 @@ class DB {
 
 export default DB;
 export { DB };
-export type { DBConfig, Status, Build };
+export type { DBConfig, Status, Build, LogChunk };

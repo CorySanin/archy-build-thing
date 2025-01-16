@@ -15,4 +15,32 @@
     .content {
         margin-left: 0;
     }
+
+    .logs {
+        font-size: 0.75em;
+    }
+}
+
+@media screen and (max-width:28rem) {
+
+    body {
+        font-size: 13pt;
+    }
+
+    .grid-2col {
+        grid-template-columns: 1fr;
+
+        .span-2 {
+            grid-column: initial;
+        }
+
+        &> :nth-last-child(n+2):nth-child(odd) {
+            font-weight: bold;
+            font-size: 1.1em;
+
+            &::after {
+                content: ":";
+            }
+        }
+    }
 }
