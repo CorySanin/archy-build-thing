@@ -26,7 +26,7 @@
         </div>
         <% } %>
         <p><a href="/build/<%= build.id %>/logs">Full logs</a></p>
-        <pre><div class="logs" id="logs"><% (log || []).forEach(line => { %><p><%= line %></p><% }) %></div></pre>
+        <pre class="overflow-x"><div class="logs" id="logs"><% (log || []).forEach(line => { %><p><%= line %></p><% }) %></div></pre>
 
         <% if (!ended) { %>
         <label id="followCheckmarkContainer" title="Follow logs">

@@ -121,7 +121,7 @@ input[type="submit"] {
 
 .sidebar {
     background: var(--primary);
-    width: 16em;
+    width: 13rem;
     height: 100%;
     position: fixed;
     top: 0;
@@ -184,7 +184,7 @@ input[type="submit"] {
 }
 
 .content {
-    margin-left: 16em;
+    margin-left: 13rem;
     padding: 1em;
 
     &.no-padding {
@@ -210,13 +210,13 @@ input[type="submit"] {
 }
 
 .logs {
+    width: fit-content;
+    min-width: 100%;
     font-family: 'Courier New', monospace;
     font-size: 0.9em;
     border-left: #d96a14 .2em solid;
     background: #2a2a2a;
     margin-top: 1em;
-    overflow-x: auto;
-    overflow-wrap: anywhere;
 
     p {
         padding: .1em .5em;
